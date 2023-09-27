@@ -1,12 +1,12 @@
-EXTERNAL_LUA = (lfs.writedir().."\\Missions\\OzDM-MMC\\")
+EXTERNAL_LUA = (lfs.Writedir().."\\Missions\\OzDM-MMC\\")
 assert(loadfile(EXTERNAL_LUA .. "MISSION_TASK_TEMPLATES.lua"))()
 JSON = assert(loadfile(EXTERNAL_LUA .. "json.lua"))()
 --[[
     Name    : MapMarkerCommands.lua
     Author  : OzDeaDMeaT
-    Date    : 16/08/2023
-    Version : 0.2o]]
-    scriptVer = '0.2o'
+    Date    : 27/09/2023
+    Version : 0.2p]]
+    ScriptVer = '0.2p'
 --[[
     This script is designed as a quick way to add the ability to order tankers, AWACS and Drones around the airspace quickly and easily with little to no LUA experience.
     Current Functionality:
@@ -529,32 +529,32 @@ Air_Support_Table.Shell11 = Shell11
 Air_Support_Table.Darkstar11 = Darkstar11
 --Functions-------------------------------------------------------------------------------------------------------------------------
 --Feet to Meters Converter
-function ft2m(value) -- Feet to Meters
+function Ft2m(value) -- Feet to Meters
     return value / 3.2808
 end
 -------------------
 --Meters to Feet Converter
-function m2ft(value) -- Feet to Meters
+function M2ft(value) -- Feet to Meters
     return value / 0.3048000097536
 end
 -------------------
 --Nautical Miles to Meters Converter
-function nm2m(value) -- Nautical Miles to Meters
+function Nm2m(value) -- Nautical Miles to Meters
     return value * 1852
 end
 -------------------
 --Meters to Nautical Miles Converter
-function m2nm(value) -- Nautical Miles to Meters
+function M2nm(value) -- Nautical Miles to Meters
     return value * 0.00053995682073434123939
 end
 -------------------
 --Knots to Meters Per Second Converter
-function kt2mps(value) -- Knots to Meters / Second
+function Kt2mps(value) -- Knots to Meters / Second
     return value * 0.514444
 end
 -------------------
 --Meters Per Second to Knots Converter
-function mps2kt(value)
+function Mps2kt(value)
     return value * 1.94384
 end
 -------------------
@@ -762,7 +762,7 @@ Return       : number]]
                 Cargo = 11,
                 Ascot = 12,
             }
-        regex = string.match(CallsignString,'%a+')
+        local regex = string.match(CallsignString,'%a+')
         CallsignCheck = CALLSIGN[regex]
         if(type(CallsignCheck) == 'number') then 
             return CallsignCheck
@@ -770,14 +770,14 @@ Return       : number]]
     end
 end
 -------------------
-function file_exists(path)
+function File_exists(path)
     -- Return true if file exists and is readable.
         local file = io.open(path, "rb")
         if file then file:close() end
         return file ~= nil
     end
 -------------------
-function readall(filename)
+function Readall(filename)
 -- Read an entire file.
 -- Use "a" in Lua 5.3; "*a" in Lua 5.1 and 5.2    
     local fh = assert(io.open(filename, "rb"))
@@ -786,7 +786,7 @@ function readall(filename)
     return contents
 end
 -------------------
-function write(filename, contents)
+function Write(filename, contents)
 -- Write a string to a file.
     local fh = assert(io.open(filename, "wb"))
     fh:write(contents)
@@ -794,8 +794,8 @@ function write(filename, contents)
     fh:close()
 end
 -------------------
-if(file_exists(EXTERNAL_LUA .. "MAP_OBJECT_TABLE.json")) then
-    MOT = JSON:decode(readall(EXTERNAL_LUA .. "MAP_OBJECT_TABLE.json"))
+if(File_exists(EXTERNAL_LUA .. "MAP_OBJECT_TABLE.json")) then
+    MOT = JSON:decode(Readall(EXTERNAL_LUA .. "MAP_OBJECT_TABLE.json"))
 else
     MOT = {}
 end
@@ -939,7 +939,7 @@ function MapObjectTable(MapObject) --!mot
     local MOT_NewEntry = #MOT + 1
     MOT[MOT_NewEntry] = MapObject
     local converted = JSON:encode_pretty(MOT)
-    write(EXTERNAL_LUA .. "MAP_OBJECT_TABLE.json", converted)
+    Write(EXTERNAL_LUA .. "MAP_OBJECT_TABLE.json", converted)
 end
 ---------------
 function MarkTerrainObject(EventData,MOT) --MOT is bool on whether map item is recorded to MAP_OBJECT_TABLE.json
@@ -950,7 +950,7 @@ function MarkTerrainObject(EventData,MOT) --MOT is bool on whether map item is r
 --Marks objects on the F10 map in the Mission Scripting Environment
     local vec3 = EventData.pos
     env.info("Marking position: {x = " .. vec3.x .. " , y = " .. vec3.y .. " , z = " .. vec3.z)
-    objects = Terrain.getObjectsAtMapPoint(vec3.x, vec3.z)
+    local objects = Terrain.getObjectsAtMapPoint(vec3.x, vec3.z)
     if(type(objects) ~= "nil") then
         local a_object = objects[1]
         local radius = a_object.radius
@@ -1008,10 +1008,10 @@ Returns      : number [Will return a that has not been allocated in the MarkerPa
     return MarkerCheck
 end
 -------------------
-function formatGRID(vec3)--[[
+function FormatGRID(vec3)--[[
 Author       : OzDeaDMeaT
 Creation Date: 29-JUL-2023
-Usage        : formatGRID(vec3)
+Usage        : FormatGRID(vec3)
 Purpose      : Formats an MGRS GRID Table into a user readable string]]
     local LLTBL = {}
     LLTBL.lat, LLTBL.lon, LLTBL.alt = coord.LOtoLL(vec3)
@@ -1025,10 +1025,10 @@ Purpose      : Formats an MGRS GRID Table into a user readable string]]
     return GRID
 end
 -------------------
-function formatMGRS(vec3)--[[
+function FormatMGRS(vec3)--[[
 Author       : OzDeaDMeaT
 Creation Date: 29-JUL-2023
-Usage        : formatMGRS(vec3)
+Usage        : FormatMGRS(vec3)
 Purpose      : Formats an MGRS Table into a user readable string]]
     local LLTBL = {}
     LLTBL.lat, LLTBL.lon, LLTBL.alt = coord.LOtoLL(vec3)
@@ -1043,11 +1043,11 @@ Purpose      : Formats an MGRS Table into a user readable string]]
     return MGRS
 end
 -------------------
-function formatLL(vec3,acc,DMS)--[[
+function FormatLL(vec3,acc,DMS)--[[
 Author       : OzDeaDMeaT
 Creation Date: 29-JUL-2023
-Usage        : formatLL(vec3, number, bool)
-Example:     : formatLL(vec3, 2, true)
+Usage        : FormatLL(vec3, number, bool)
+Example:     : FormatLL(vec3, 2, true)
 Return:      : string - e.g. ""
 Purpose      : Formats an LL Table into a user readable string
 Code borrowed from Mist https://github.com/mrSkortch/MissionScriptingTools]]
@@ -1158,7 +1158,7 @@ function RegisterUCID(EventData)--[[
 Author       : OzDeaDMeaT
 Creation Date: 03-AUG-2023
 Usage        : RegisterUCID(EventData) [Expected data from Marker Remove Event Handler]
-Returns      : writes UCID and Username to file]]
+Returns      : Writes UCID and Username to file]]
 end
 -------------------
 function AirCommandParser(EventData)--[[
@@ -1183,6 +1183,7 @@ function CreateSmoke(coord,color)--[[
 Author       : OzDeaDMeaT
 Creation Date: 9-JUL-2023
 Usage        : CreateSmoke(vec3, string)]]
+    local trigSmoke    
     if color == nil then 
         trigSmoke = trigger.smokeColor.White
     else 
@@ -1204,20 +1205,21 @@ function CreateFlare(coord,color)--[[
 Author       : OzDeaDMeaT
 Creation Date: 9-JUL-2023
 Usage        : CreateFlare(vec3, string)]]
+    local trigFlare    
     if color == nil then 
-        trigSmoke = trigger.flareColor.White
+        trigFlare = trigger.flareColor.White
     else 
         local colour = string.lower(color)
         env.info(string.format("Colour   : %s", tostring(colour)))
 
-        if colour == "green" then trigSmoke = trigger.flareColor.Green 
-            elseif colour == "red" then trigSmoke = trigger.flareColor.Red
-            elseif colour == "white" then trigSmoke = trigger.flareColor.White 
-            elseif colour == "yellow" then trigSmoke = trigger.flareColor.Yellow
-            elseif true then trigSmoke = trigger.flareColor.White 
+        if colour == "green" then trigFlare = trigger.flareColor.Green 
+            elseif colour == "red" then trigFlare = trigger.flareColor.Red
+            elseif colour == "white" then trigFlare = trigger.flareColor.White 
+            elseif colour == "yellow" then trigFlare = trigger.flareColor.Yellow
+            elseif true then trigFlare = trigger.flareColor.White 
         end
     end
-    local newsignalFlare = trigger.action.signalFlare( coord, trigSmoke,0)
+    local newsignalFlare = trigger.action.signalFlare( coord, trigFlare,0)
 end
 -------------------
 function CreateIllum(coord, brightness)--[[
@@ -1235,10 +1237,10 @@ Usage        : CreateExplosion(vec3, number)]]
     trigger.action.explosion(coord,blast)
 end
 -------------------
-function clean(coord, radius)--[[
+function Clean(coord, radius)--[[
 Author       : OzDeaDMeaT
 Creation Date: 9-JUL-2023
-Usage        : clean(vec3, number)]]
+Usage        : Clean(vec3, number)]]
     local sphereVolume = {
         id = world.VolumeType.SPHERE,
         params = {point = coord,radius = radius}
@@ -1280,7 +1282,7 @@ function MakeOrbitMark(AircraftName)
                     if(OzDM.DEBUG == true) then env.info("MakeOrbitMark: OLD Orbit MarkerID " .. tostring(AST.id) .. " REMOVED!!") end
                     trigger.action.removeMark(AST.id)
                 end
-                newMarkerID = GetFreeMarkerID(AST.id)
+                local newMarkerID = GetFreeMarkerID(AST.id)
                 if(OzDM.DEBUG == true) then env.info("MakeOrbitMark: NEW Orbit MarkerID " .. tostring(newMarkerID) .. " CREATED!!") end
                 trigger.action.circleToAll( -1,                 -- -1 == ALL, 0 == Neutral, 1 == Red, 2 == Blue
                                                 newMarkerID,        -- Draw ID (must be unique)
@@ -1426,7 +1428,7 @@ function DrawRT(AircraftName, vec3, bearing, distance) -- , LineColour, FillColo
     else
         env.info("No Mark Number Found in Table!!")
     end
-    newMarkerID = GetFreeMarkerID(AST.id)
+    local newMarkerID = GetFreeMarkerID(AST.id)
     if(OzDM.DEBUG == true) then env.info("DrawRT: NEW Orbit MarkerID " .. tostring(newMarkerID) .. " CREATED!!") end
     trigger.action.markupToAll( 7,                  -- Draw Type
                                 -1,                 -- Coalition -1 == ALL, 0 == Neutral, 1 == Red, 2 == Blue
@@ -1507,10 +1509,10 @@ Returns      : Message]]
         SwitchLower = 'all'
     end
     local Progress = false
-    local MGRS = formatMGRS(pos)
-    local GRID = formatGRID(pos)
-    local LLDM = formatLL(pos,4,false)
-    local LLDMS = formatLL(pos,2,true)
+    local MGRS = FormatMGRS(pos)
+    local GRID = FormatGRID(pos)
+    local LLDM = FormatLL(pos,4,false)
+    local LLDMS = FormatLL(pos,2,true)
 
     if ((SwitchLower == 'grid') or (SwitchLower == 'all')) then    
         Progress = true
@@ -1545,7 +1547,7 @@ Returns      : Message]]
     end
     if (Progress == true) then 
         local altMeters = land.getHeight({x=pos.x, y=pos.z})
-        local altFeet   = m2ft(altMeters)
+        local altFeet   = M2ft(altMeters)
         outputString = outputString .. "\nALT: " .. math.floor(altMeters) .. "m / " .. math.floor(altFeet) .. "ft"
         if(IsUnit(initiator) == true) then
             trigger.action.outTextForUnit(initiator:getID(), outputString, 90, false)
@@ -1632,8 +1634,8 @@ end
 function MarkerClean(coord,markerTXT)--[[
 Author       : OzDeaDMeaT
 Creation Date: 9-JUL-2023
-Usage        : !clean:<radius>
-Example      : !clean:5000
+Usage        : !Clean:<radius>
+Example      : !Clean:5000
 (Cant exceed your OzDM.CLEAN_LIMIT value)]]
     local StringTBL = StringSplit(markerTXT,':')
     local CleanRadius = tonumber(StringTBL[#StringTBL])
@@ -1646,7 +1648,7 @@ Example      : !clean:5000
             env.info(string.format("CleanRadius value of %s is too high, cant be over a value of %s, limiting value back down to %s",tostring(CleanRadius), tostring(OzDM.CLEAN_LIMIT), tostring(OzDM.CLEAN_LIMIT)))
             CleanRadius = OzDM.CLEAN_LIMIT
         end
-        clean(coord,CleanRadius)
+        Clean(coord,CleanRadius)
     else 
         env.info(string.format("CleanRadius: %s is NOT a number",tostring(CleanRadius)))
     end
@@ -1765,12 +1767,12 @@ Usage        : Used with EventHandler(MarkerRemoved)]]
             if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: Flight Arg(s) found!!! = " .. FlightArgs) end 
             if (string.find(FlightArgs:lower(),'-s')) then
                 if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: Speed Arg found!!") end
-                local SpeedStr = string.match(FlightArgs,'\-s%-?%d+')
+                local SpeedStr = string.match(FlightArgs,"[s].?-?%d+")
                 if SpeedStr ~= nil then 
-                    SpeedNum = tonumber(string.match(SpeedStr,'%-?%d+'))
+                    SpeedNum = tonumber(string.match(SpeedStr,"%-?[0-9]+"))
                     if (SpeedNum <= SPEED_INCREMENT) and (SpeedNum >= SPEED_INCREMENT_NEG) then 
                         if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: Speed number is classified as DELTA # = " .. tostring(SpeedNum)) end
-                        Air_Support_Table[Aircraft].LastOrder.speed = Air_Support_Table[Aircraft].LastOrder.speed + kt2mps(SpeedNum)
+                        Air_Support_Table[Aircraft].LastOrder.speed = Air_Support_Table[Aircraft].LastOrder.speed + Kt2mps(SpeedNum)
                         if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: " .. Aircraft .. " speed set to " .. tostring(Air_Support_Table[Aircraft].LastOrder.speed)) end
                         --SWITCH TO DELTA SPEED
                     else
@@ -1778,8 +1780,8 @@ Usage        : Used with EventHandler(MarkerRemoved)]]
                             SpeedNum = SpeedNum * -1
                             -- Absolute SPEED value can not be less than 0
                         end
-                        if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: Speed number is classified as Absolute # = " .. tostring(kt2mps(SpeedNum))) end
-                        Air_Support_Table[Aircraft].LastOrder.speed = kt2mps(SpeedNum)
+                        if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: Speed number is classified as Absolute # = " .. tostring(Kt2mps(SpeedNum))) end
+                        Air_Support_Table[Aircraft].LastOrder.speed = Kt2mps(SpeedNum)
                         if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: " .. Aircraft .. " speed set to " .. tostring(Air_Support_Table[Aircraft].LastOrder.speed)) end
                         --SWITCH TO Absolute SPEED
                     end
@@ -1794,12 +1796,12 @@ Usage        : Used with EventHandler(MarkerRemoved)]]
 
             if (string.find(FlightArgs:lower(),'-a')) then --ALTITUDE SECTION
                 if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: Altitude Arg found!!") end
-                local AltStr = string.match(FlightArgs,'\-a%-?%d+')
+                local AltStr = string.match(FlightArgs,"[a].?-?%d+")
                 if AltStr ~= nil then 
-                    AltNum = tonumber(string.match(AltStr,'%-?%d+'))
+                    AltNum = tonumber(string.match(AltStr,"%-?[0-9]+"))
                     if (AltNum <= ALT_INCREMENT) and (AltNum >= ALT_INCREMENT_NEG) then 
                         if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: Number is classified as DELTA # = " .. tostring(AltNum)) end
-                        Air_Support_Table[Aircraft].LastOrder.alt = Air_Support_Table[Aircraft].LastOrder.alt + ft2m(AltNum)
+                        Air_Support_Table[Aircraft].LastOrder.alt = Air_Support_Table[Aircraft].LastOrder.alt + Ft2m(AltNum)
                         if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: " .. Aircraft .. " altitude set to " .. tostring(Air_Support_Table[Aircraft].LastOrder.alt)) end
                         --SWITCH TO DELTA ALT
                     else
@@ -1808,7 +1810,7 @@ Usage        : Used with EventHandler(MarkerRemoved)]]
                             -- Absolute ALT value can not be less than 0
                         end
                         if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: Number is classified as Absolute # = " .. tostring(AltNum)) end
-                        Air_Support_Table[Aircraft].LastOrder.alt = ft2m(AltNum)
+                        Air_Support_Table[Aircraft].LastOrder.alt = Ft2m(AltNum)
                         if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: " .. Aircraft .. " altitude set to " .. tostring(Air_Support_Table[Aircraft].LastOrder.alt)) end
                         --SWITCH TO Absolute ALT
                     end
@@ -1835,12 +1837,9 @@ Usage        : Used with EventHandler(MarkerRemoved)]]
                     if(OzDM.DEBUG == true) then env.info("MarkerAirSupportTasking: RaceTrack Orbit Selected!!") end
                     AST.LastOrder.RT = true
                     Air_Support_Table[Aircraft].LastOrder.RT = true
-                    --Air_Support_Table[Aircraft].LastOrder.WP02.x = pos.x
-                    --Air_Support_Table[Aircraft].LastOrder.WP02.y = pos.z
-                    local RaceTrack = string.match(FlightArgs,'\-rt.%d+\-%d+')
+                    local RaceTrack = string.match(FlightArgs,"[-][r][t].?%d+.?%d+")
                     local Bearing   = string.match(RaceTrack,'%d+')
-                    local tmp       = string.match(RaceTrack,'\-%d+')
-                    local Range     = string.match(tmp,'%d+')
+                    local Range       = string.match(RaceTrack,"%d+$")
                     Bearing = tonumber(Bearing)
                     Range = tonumber(Range)
                     if(Range < 500) then 
@@ -1901,7 +1900,7 @@ Return       : MissionTask]]
     local UnitPosition = AirSupportUnit:getPosition().p
     local FuelState = math.round(AirSupportUnit:getFuel() * 100,1)
     env.info("FUELSTATE =========== " .. FuelState)
-    local MGRS_GRID = formatGRID(UnitPosition)
+    local MGRS_GRID = FormatGRID(UnitPosition)
     --local Callsign  = GetCallsignID(AircraftName)
     local Modulation
     if(AST.FreqMode == 0) then
@@ -1927,7 +1926,7 @@ Return       : MissionTask]]
     elseif (AWACS == true) then
         MESSAGE = AircraftName .. " has arrived on station at grid " .. MGRS_GRID .. "\nRadio: " .. tostring(AST.Freq) .. Modulation .. "\nFuel State: " .. tostring(FuelState) .. "%\nPlaytime: " .. PlayTime
     elseif (TANKER == true) then
-        MESSAGE = AircraftName .. " has arrived on station at grid " .. MGRS_GRID .. "\nRadio: " .. tostring(AST.Freq) .. Modulation .. "\nTACAN (" .. AST.TACAN.CALLSIGN .. "): " .. tostring(AST.TACAN.CHANNEL) .. tostring(AST.TACAN.MODECHANNEL) .. "\nALT/SPEED: " .. math.round(m2ft(AST.LastOrder.alt),0) .. "ft at " .. math.round(mps2kt(AST.LastOrder.speed),0) .. "kt\nFuel State: " .. tostring(FuelState) .. "%\nPlaytime: " .. PlayTime
+        MESSAGE = AircraftName .. " has arrived on station at grid " .. MGRS_GRID .. "\nRadio: " .. tostring(AST.Freq) .. Modulation .. "\nTACAN (" .. AST.TACAN.CALLSIGN .. "): " .. tostring(AST.TACAN.CHANNEL) .. tostring(AST.TACAN.MODECHANNEL) .. "\nALT/SPEED: " .. math.round(M2ft(AST.LastOrder.alt),0) .. "ft at " .. math.round(Mps2kt(AST.LastOrder.speed),0) .. "kt\nFuel State: " .. tostring(FuelState) .. "%\nPlaytime: " .. PlayTime
     else
         MESSAGE = AircraftName .. " has arrived on station at grid " .. MGRS_GRID .. "\nFuel State: " .. tostring(FuelState) .. "%\nPlaytime: " .. PlayTime
     end
@@ -1971,7 +1970,7 @@ Return       : MissionTask]]
         local UnitPosition = AirSupportUnit:getPosition().p
         local FuelState = math.round(AirSupportUnit:getFuel() * 100,1)
         local ArriveStringCommand = string.format("ReportOnStationStatus('%s')",UnitName)
-        local MGRS_GRID = formatGRID({x = AST.LastOrder.WP02.x, y = 0, z = AST.LastOrder.WP02.y})
+        local MGRS_GRID = FormatGRID({x = AST.LastOrder.WP02.x, y = 0, z = AST.LastOrder.WP02.y})
         local SUPPORT_MISSION
         local INITIAL_TASKS
         local OrbitType
@@ -2087,4 +2086,4 @@ trigger.action.outText(
 env.info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 env.info('!!!! MAP MARKER COMMANDS INITIALIZED !!!!!')
 env.info('!!!!!!!!!!! by OzDeaDMeaT !!!!!!!!!!!!!!!!')
-env.info('!!!!!!!!!!! Version: ' .. scriptVer ..' !!!!!!!!!!!!!!!!')
+env.info('!!!!!!!!!!! Version: ' .. ScriptVer ..' !!!!!!!!!!!!!!!!')
