@@ -61,19 +61,19 @@ BUG: AI Drones do not use laser codes they are assigned
 
 Additional features I would like to add:
 
-Ability to change speed and altitude of Drones DONE!!
-Add ISR Drones retasking DONE!!
-Change Radio Freq (DONE VIA SCRIPT)
-Change Speed and Altitude DONE!!
-Draw Orbit Marker (RaceTrack or Circular) DONE!!
-Add Tanker retasking DONE!!
-Change Radio Freq (DONE VIA SCRIPT)
-Change TACAN (DONE VIA SCRIPT)
-Change Speed and Altitude DONE!!
-Draw Orbit Marker (RaceTrack or Circular) DONE!!
-Add AWACs retasking DONE!!
-Change Radio Freq (DONE VIA SCRIPT)
-Change TACAN (DONE VIA SCRIPT)
-Change Speed and Altitude DONE!!
-Draw Orbit Marker (RaceTrack or Circular) DONE!!
+- Ability to change speed and altitude of Drones DONE!!
+- Add ISR Drones retasking DONE!!
+- Change Radio Freq (DONE VIA SCRIPT)
+- Change Speed and Altitude DONE!!
+- Draw Orbit Marker (RaceTrack or Circular) DONE!!
+- Add Tanker retasking DONE!!
+- Change Radio Freq (DONE VIA SCRIPT)
+- Change TACAN (DONE VIA SCRIPT)
+- Change Speed and Altitude DONE!!
+- Draw Orbit Marker (RaceTrack or Circular) DONE!!
+- Add AWACs retasking DONE!!
+- Change Radio Freq (DONE VIA SCRIPT)
+- Change TACAN (DONE VIA SCRIPT)
+- Change Speed and Altitude DONE!!
+- Draw Orbit Marker (RaceTrack or Circular) DONE!!
 CoOrdinate message DONE!!
